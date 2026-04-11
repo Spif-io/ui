@@ -1,0 +1,18 @@
+node_modules
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# SvelteKit build output
+.svelte-kit
+build
+dist
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# pnpm
+.pnpm-store
