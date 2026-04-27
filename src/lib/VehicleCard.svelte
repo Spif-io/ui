@@ -33,6 +33,17 @@
     showFeaturedBadge?: boolean;
     /** Show a condition badge (new/used/certified). Default: false. */
     showConditionBadge?: boolean;
+    /** Base price before fees. When set, enables the price breakdown view. */
+    basePrice?: number;
+    /** Dealer doc fee added to price. Only shown when > 0. */
+    docFee?: number;
+    /** Accessories fee added to price. Only shown when > 0. */
+    accessoriesFee?: number;
+    /** Labels for the breakdown lines. */
+    basePriceLabel?: string;
+    docFeeLabel?: string;
+    accessoriesFeeLabel?: string;
+    totalLabel?: string;
   }
 
   let {
@@ -43,8 +54,19 @@
     showTrim = true,
     showBadges = false,
     showFeaturedBadge = true,
-    showConditionBadge = false
+    showConditionBadge = false,
+    basePrice,
+    docFee = 0,
+    accessoriesFee = 0,
+    basePriceLabel = 'Display Price',
+    docFeeLabel = 'Doc Fee',
+    accessoriesFeeLabel = 'Accessories',
+    totalLabel = 'Total'
   }: Props = $props();
+
+  const showBreakdown = $derived(basePrice != null && (docFee > 0 || accessoriesFee > 0));
+
+  const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 
   const formattedPrice = $derived(
     vehicle.price == null
@@ -154,9 +176,34 @@
         </div>
       {/if}
 
-      <div class="flex items-center justify-between py-3 border-t border-border/50">
-        <span class="text-sm text-muted-foreground">{priceLabel}</span>
-        <span class="text-xl font-bold text-foreground">{formattedPrice}</span>
+      <div class="py-3 border-t border-border/50">
+        {#if showBreakdown}
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-muted-foreground">{basePriceLabel}</span>
+            <span class="text-sm text-muted-foreground">{fmt(basePrice!)}</span>
+          </div>
+          {#if docFee > 0}
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-muted-foreground">{docFeeLabel}</span>
+              <span class="text-sm text-muted-foreground">{fmt(docFee)}</span>
+            </div>
+          {/if}
+          {#if accessoriesFee > 0}
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-muted-foreground">{accessoriesFeeLabel}</span>
+              <span class="text-sm text-muted-foreground">{fmt(accessoriesFee)}</span>
+            </div>
+          {/if}
+          <div class="flex items-center justify-between mt-1">
+            <span class="text-sm font-medium text-muted-foreground">{totalLabel}</span>
+            <span class="text-xl font-bold text-foreground">{formattedPrice}</span>
+          </div>
+        {:else}
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-muted-foreground">{priceLabel}</span>
+            <span class="text-xl font-bold text-foreground">{formattedPrice}</span>
+          </div>
+        {/if}
       </div>
 
       <div class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground group-hover:opacity-90 transition-opacity">
