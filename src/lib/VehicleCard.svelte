@@ -44,6 +44,11 @@
     docFeeLabel?: string;
     accessoriesFeeLabel?: string;
     totalLabel?: string;
+    /** When provided, the CTA becomes a button that invokes this callback
+     * instead of navigating to the VDP. Used by SRP pages that want
+     * "Request More Info" to open a modal directly from the listing. The
+     * surrounding card stays a link — only the CTA is intercepted. */
+    onCtaClick?: (v: CardVehicle) => void;
   }
 
   let {
@@ -61,8 +66,16 @@
     basePriceLabel = 'Display Price',
     docFeeLabel = 'Doc Fee',
     accessoriesFeeLabel = 'Accessories',
-    totalLabel = 'Total'
+    totalLabel = 'Total',
+    onCtaClick
   }: Props = $props();
+
+  function handleCta(e: MouseEvent) {
+    if (!onCtaClick) return;
+    e.preventDefault();
+    e.stopPropagation();
+    onCtaClick(vehicle);
+  }
 
   const showBreakdown = $derived(basePrice != null && (docFee > 0 || accessoriesFee > 0));
 
@@ -206,9 +219,19 @@
         {/if}
       </div>
 
-      <div class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground group-hover:opacity-90 transition-opacity">
-        {ctaText}
-      </div>
+      {#if onCtaClick}
+        <button
+          type="button"
+          onclick={handleCta}
+          class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer"
+        >
+          {ctaText}
+        </button>
+      {:else}
+        <div class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground group-hover:opacity-90 transition-opacity">
+          {ctaText}
+        </div>
+      {/if}
     </div>
   </div>
 </a>
