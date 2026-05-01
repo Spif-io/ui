@@ -223,12 +223,12 @@
         <button
           type="button"
           onclick={handleCta}
-          class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer"
+          class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/85 hover:scale-[1.02] hover:shadow-md hover:shadow-primary/30 active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
           {ctaText}
         </button>
       {:else}
-        <div class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground group-hover:opacity-90 transition-opacity">
+        <div class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground group-hover:bg-primary/85 group-hover:shadow-md group-hover:shadow-primary/30 transition-all duration-200">
           {ctaText}
         </div>
       {/if}
