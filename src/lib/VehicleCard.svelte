@@ -100,6 +100,30 @@
   const titleLine = $derived(
     [vehicle.year, vehicle.make, vehicle.model].filter(Boolean).join(' ')
   );
+
+  // Track terminal image failure so we render the make/model placeholder
+  // instead of a broken-image icon when both the R2 thumbnail and the
+  // HomeNet fallback fail (or fallback is empty).
+  let imageFailed = $state(false);
+  // Reset whenever the vehicle changes (Svelte reuses the component
+  // when iterating over a list — without this a single bad image would
+  // leave the placeholder stuck for whatever vehicle next reuses the slot).
+  $effect(() => {
+    vehicle.id;
+    imageFailed = false;
+  });
+
+  function handleImgError(e: Event) {
+    const img = e.currentTarget as HTMLImageElement;
+    const fb = vehicle.fallbackImageUrl;
+    if (fb && img.src !== fb) {
+      img.src = fb;
+      return;
+    }
+    // No fallback (or fallback also failed) — hide the broken <img>
+    // so the make/model placeholder underneath shows through.
+    imageFailed = true;
+  }
 </script>
 
 <a href={href(vehicle)} class="group block{isSold ? ' opacity-75' : ''}">
@@ -109,18 +133,13 @@
 
     <!-- Image -->
     <div class="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-secondary to-muted">
-      {#if vehicle.imageUrl}
+      {#if vehicle.imageUrl && !imageFailed}
         <img
           src={vehicle.imageUrl}
           alt="{vehicle.year} {vehicle.make} {vehicle.model}"
           class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
-          onerror={(e) => {
-            const img = e.currentTarget as HTMLImageElement;
-            if (vehicle.fallbackImageUrl && img.src !== vehicle.fallbackImageUrl) {
-              img.src = vehicle.fallbackImageUrl;
-            }
-          }}
+          onerror={handleImgError}
         />
       {:else}
         <div class="absolute inset-0 flex items-center justify-center">
