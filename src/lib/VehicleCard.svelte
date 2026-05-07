@@ -44,6 +44,10 @@
     docFeeLabel?: string;
     accessoriesFeeLabel?: string;
     totalLabel?: string;
+    /** Tailwind color class applied to the prominent price number.
+     * Defaults to text-foreground; del-motors passes `text-green-600` to
+     * highlight the Internet Price in green. */
+    priceColor?: string;
     /** When provided, the CTA becomes a button that invokes this callback
      * instead of navigating to the VDP. Used by SRP pages that want
      * "Request More Info" to open a modal directly from the listing. The
@@ -67,6 +71,7 @@
     docFeeLabel = 'Doc Fee',
     accessoriesFeeLabel = 'Accessories',
     totalLabel = 'Total',
+    priceColor = 'text-foreground',
     onCtaClick
   }: Props = $props();
 
@@ -228,12 +233,12 @@
           {/if}
           <div class="flex items-center justify-between mt-1">
             <span class="text-sm font-medium text-muted-foreground">{totalLabel}</span>
-            <span class="text-xl font-bold text-foreground">{formattedPrice}</span>
+            <span class="text-xl font-bold {priceColor}">{formattedPrice}</span>
           </div>
         {:else}
           <div class="flex items-center justify-between">
             <span class="text-sm text-muted-foreground">{priceLabel}</span>
-            <span class="text-xl font-bold text-foreground">{formattedPrice}</span>
+            <span class="text-xl font-bold {priceColor}">{formattedPrice}</span>
           </div>
         {/if}
       </div>
