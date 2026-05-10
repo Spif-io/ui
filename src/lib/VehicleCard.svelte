@@ -11,7 +11,7 @@
   Garage's hex red theme without conditional code.
 -->
 <script lang="ts">
-  import { Gauge, ArrowUpRight } from 'lucide-svelte';
+  import { Gauge, ArrowUpRight, Phone } from 'lucide-svelte';
   import type { CardVehicle } from './types.js';
 
   interface Props {
@@ -61,6 +61,12 @@
      * "Request More Info" to open a modal directly from the listing. The
      * surrounding card stays a link — only the CTA is intercepted. */
     onCtaClick?: (v: CardVehicle) => void;
+    /** Phone number (digits-only) for a mobile-only "Click To Call" button
+     * rendered below the primary CTA. When falsy, no button is rendered.
+     * Hidden at md+ breakpoints. */
+    mobileCallTel?: string;
+    /** Display text for the mobile call button. Defaults to "Click To Call". */
+    mobileCallLabel?: string;
   }
 
   let {
@@ -82,7 +88,9 @@
     priceColor = 'text-foreground',
     labelColor = 'text-muted-foreground',
     breakdownValueColor = 'text-muted-foreground',
-    onCtaClick
+    onCtaClick,
+    mobileCallTel,
+    mobileCallLabel = 'Click To Call'
   }: Props = $props();
 
   function handleCta(e: MouseEvent) {
@@ -261,6 +269,16 @@
         >
           {ctaText}
         </button>
+        {#if mobileCallTel}
+          <a
+            href="tel:{mobileCallTel}"
+            onclick={(e) => e.stopPropagation()}
+            class="md:hidden mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary/10 hover:bg-primary/15 px-4 py-2.5 text-sm font-semibold text-primary border border-primary/20 transition-colors"
+          >
+            <Phone class="h-4 w-4" />
+            {mobileCallLabel}
+          </a>
+        {/if}
       {:else}
         <div class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground group-hover:bg-primary/85 group-hover:shadow-md group-hover:shadow-primary/30 transition-all duration-200">
           {ctaText}
