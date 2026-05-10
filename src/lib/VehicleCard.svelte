@@ -48,6 +48,14 @@
      * Defaults to text-foreground; del-motors passes `text-green-600` to
      * highlight the Internet Price in green. */
     priceColor?: string;
+    /** Tailwind color class for breakdown labels (Display Price, Doc Fee,
+     * Accessories, Total) and the Internet Price label in the no-breakdown
+     * branch. Defaults to text-muted-foreground. */
+    labelColor?: string;
+    /** Tailwind color class for breakdown row VALUES (Display Price, Doc Fee,
+     * Accessories). Does not affect the prominent price number — that's
+     * controlled by `priceColor`. Defaults to text-muted-foreground. */
+    breakdownValueColor?: string;
     /** When provided, the CTA becomes a button that invokes this callback
      * instead of navigating to the VDP. Used by SRP pages that want
      * "Request More Info" to open a modal directly from the listing. The
@@ -72,6 +80,8 @@
     accessoriesFeeLabel = 'Accessories',
     totalLabel = 'Total',
     priceColor = 'text-foreground',
+    labelColor = 'text-muted-foreground',
+    breakdownValueColor = 'text-muted-foreground',
     onCtaClick
   }: Props = $props();
 
@@ -216,28 +226,28 @@
       <div class="py-3 border-t border-border/50">
         {#if showBreakdown}
           <div class="flex items-center justify-between">
-            <span class="text-xs text-muted-foreground">{basePriceLabel}</span>
-            <span class="text-sm text-muted-foreground">{fmt(basePrice!)}</span>
+            <span class="text-xs {labelColor}">{basePriceLabel}</span>
+            <span class="text-sm {breakdownValueColor}">{fmt(basePrice!)}</span>
           </div>
           {#if docFee > 0}
             <div class="flex items-center justify-between">
-              <span class="text-xs text-muted-foreground">{docFeeLabel}</span>
-              <span class="text-sm text-muted-foreground">{fmt(docFee)}</span>
+              <span class="text-xs {labelColor}">{docFeeLabel}</span>
+              <span class="text-sm {breakdownValueColor}">{fmt(docFee)}</span>
             </div>
           {/if}
           {#if accessoriesFee > 0}
             <div class="flex items-center justify-between">
-              <span class="text-xs text-muted-foreground">{accessoriesFeeLabel}</span>
-              <span class="text-sm text-muted-foreground">{fmt(accessoriesFee)}</span>
+              <span class="text-xs {labelColor}">{accessoriesFeeLabel}</span>
+              <span class="text-sm {breakdownValueColor}">{fmt(accessoriesFee)}</span>
             </div>
           {/if}
           <div class="flex items-center justify-between mt-1">
-            <span class="text-sm font-medium text-muted-foreground">{totalLabel}</span>
+            <span class="text-sm font-medium {labelColor}">{totalLabel}</span>
             <span class="text-xl font-bold {priceColor}">{formattedPrice}</span>
           </div>
         {:else}
           <div class="flex items-center justify-between">
-            <span class="text-sm text-muted-foreground">{priceLabel}</span>
+            <span class="text-sm {labelColor}">{priceLabel}</span>
             <span class="text-xl font-bold {priceColor}">{formattedPrice}</span>
           </div>
         {/if}
